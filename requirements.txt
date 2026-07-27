@@ -1,8 +1,8 @@
-fastapi==0.118.0
+fastapi==0.136.0
 uvicorn==0.37.0
 pyaml-env==1.2.2
 pyjwt==2.10.1
-redis==6.4.0
+redis==7.4.0
 tailer==0.4.1
 psutil==7.1.0
 cryptography==46.0.1
