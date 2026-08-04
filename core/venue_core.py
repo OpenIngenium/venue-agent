@@ -155,7 +155,7 @@ def launch_script(path_to_script, inputs, outputs):
     preexec_fn=os.setsid, env=script_env, stdout=log_file, stderr=log_file)
   process_pid = process.pid
 
-  r = redis.StrictRedis(host='localhost', port=6379, db=0)
+  r = redis.Redis(host='localhost', port=6379, db=0)
 
   process_redis_data = {
     'process_id': str(process_pid),
@@ -300,7 +300,7 @@ def get_custom_script_status(script_run_id):
   logger.debug(f'Getting the custom script status for script_run_id: {script_run_id}')
 
   # get script information via script ID from Redis
-  r = redis.StrictRedis(host='localhost', port=6379, db=0)
+  r = redis.Redis(host='localhost', port=6379, db=0)
 
   try:
     script_info_redis = json.loads(r.get(script_run_id))
@@ -384,7 +384,7 @@ def halt_custom_script(script_run_id):
   logger.debug(f'Halting custom script for script_run_id: {script_run_id}')
 
   # get script information via script ID from Redis 
-  r = redis.StrictRedis(host='localhost', port=6379, db=0)
+  r = redis.Redis(host='localhost', port=6379, db=0)
   try:
     script_info_redis = json.loads(r.get(script_run_id))
   except Exception as ex:
@@ -428,7 +428,7 @@ def get_custom_script_files(script_run_id):
   #custom_script_temp_dir = os.path.join(CUSTOM_SCRIPT_LOG_PATH_BASE, script_run_id)
 
   # get script information via script ID from Redis
-  r = redis.StrictRedis(host="localhost", port=6379, db=0)
+  r = redis.Redis(host="localhost", port=6379, db=0)
 
   try:
     script_info_redis = json.loads(r.get(script_run_id))

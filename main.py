@@ -11,7 +11,7 @@ def print_env_variables():
     names = [
         'ING_VENUE_DIR',
         'ING_LOG_DIR',
-        'CUSTOM_SCRIPT_BASE_DIR'
+        'CUSTOM_SCRIPT_BASE_DIR',
         'PATH'
     ]
     for name in names:

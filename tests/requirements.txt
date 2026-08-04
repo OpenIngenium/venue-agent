@@ -1,6 +1,6 @@
-pytest>=7.0
-requests>=2.29
-PyJWT==1.7.0
-cryptography==2.4.2
-httpx
-pytest-timeout
+pytest==9.1.1
+requests==2.34.2
+httpx==0.28.1
+pytest-timeout==2.4.0
+pyjwt==2.13.0
+cryptography==50.0.0

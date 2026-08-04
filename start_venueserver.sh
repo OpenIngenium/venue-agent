@@ -77,7 +77,8 @@ fi
 # Change PYTHONPATH to use local packages first.
 # Need this to override the system level installation of Click. 
 # FASTAPI needs click version >= 7
-export PYTHONPATH=$VENV_DIR/lib/python3.6/site-packages:$VENV_DIR/lib64/python3.6/site-packages:$ING_MTAK_DIR:$PYTHONPATH
+PYVER=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+export PYTHONPATH=$VENV_DIR/lib/python$PYVER/site-packages:$VENV_DIR/lib64/python$PYVER/site-packages
 IFS=':' read -ra PATHS <<< "$PYTHONPATH"
 echo "PYTHONPATH"
 for i in "${PATHS[@]}"; do

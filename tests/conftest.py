@@ -73,7 +73,7 @@ def jwt_token():
     private_key = Path(private_key_path).read_text()
     algorithm = os.getenv("JWT_ALGORITHM", "RS256")
 
-    now_ts = int(datetime.datetime.utcnow().timestamp())
+    now_ts = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
     payload = {
         "sub": "test_user",            # subject – can be any identifier
         "iat": now_ts,                    # issued‑at
@@ -102,7 +102,7 @@ def expired_jwt_token():
     private_key = Path(private_key_path).read_text()
     algorithm = os.getenv("JWT_ALGORITHM", "RS256")
 
-    now_ts = int(datetime.datetime.utcnow().timestamp())
+    now_ts = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
     payload = {
         "sub": "test_user",            # subject – can be any identifier
         "iat": now_ts,                    # issued‑at
@@ -131,7 +131,7 @@ def no_scope_jwt_token():
     private_key = Path(private_key_path).read_text()
     algorithm = os.getenv("JWT_ALGORITHM", "RS256")
 
-    now_ts = int(datetime.datetime.utcnow().timestamp())
+    now_ts = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
     payload = {
         "sub": "test_user",            # subject – can be any identifier
         "iat": now_ts - 7200,          # issued 2 h ago

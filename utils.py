@@ -51,7 +51,7 @@ def get_decoded_token (authorization_header):
   # This may throw an exception.
   # The caller should handle it
   jwt_decoded = jwt.decode(
-    jwt_token, exec_venue_public_pem, algorithms='RS256')
+    jwt_token, exec_venue_public_pem, algorithms=['RS256'])
 
   return jwt_decoded
 
