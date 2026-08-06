@@ -5,6 +5,8 @@ import subprocess
 from pathlib import Path
 import datetime
 import logging
+from unittest.mock import patch
+import fakeredis
 
 
 import pytest
@@ -146,6 +148,14 @@ def no_scope_jwt_token():
     if isinstance(token, bytes):
         token = token.decode("utf-8")
     return token
+
+@pytest.fixture(scope="session", autouse=True)
+def fake_redis():
+    """Patch redis.Redis with a shared FakeRedis server for the entire test session."""
+    server = fakeredis.FakeServer()
+    with patch("redis.Redis", lambda *args, **kwargs: fakeredis.FakeRedis(server=server)):
+        yield server
+
 
 @pytest.fixture(scope="module")
 def auth_client(jwt_token):
