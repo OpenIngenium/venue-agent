@@ -4,6 +4,8 @@ logger = logging.getLogger(__name__)
 import os
 import jwt
 import zlib
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.backends import default_backend
 
 PUBLIC_PEM_FILE = 'exec_venue_public_pem.pem'
 ACCEPTED_SCOPES = ['execute:wsts', 'execute:sit', 'execute:testbed', 'execute:other']
@@ -13,6 +15,7 @@ public_pem_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
 exec_venue_public_pem_file = None
 exec_venue_public_pem = None
 exec_venue_public_pem_barray = None
+exec_venue_public_key_object = None
 key_crc32 = None
 
 try:
@@ -22,7 +25,15 @@ try:
   exec_venue_public_pem_barray = bytearray()
   exec_venue_public_pem_barray.extend(map(ord, exec_venue_public_pem))
   key_crc32 = hex(zlib.crc32(exec_venue_public_pem_barray) & 0xffffffff)
+  
+  # Load the key as a proper cryptography object for compatibility with newer PyJWT/cryptography versions
+  exec_venue_public_key_object = serialization.load_pem_public_key(
+    exec_venue_public_pem.encode('utf-8'),
+    backend=default_backend()
+  )
+  
   logger.info(f'public key crc32: {key_crc32}')
+  logger.info(f'public key type: {type(exec_venue_public_key_object).__name__}')
 except Exception as ex:
   msg = f'Failed to load JWT public key from {public_pem_path}'
   logger.exception(msg)
@@ -50,8 +61,9 @@ def get_decoded_token (authorization_header):
 
   # This may throw an exception.
   # The caller should handle it
+  # Use the key object for better compatibility with PyJWT 2.x and cryptography 50.x
   jwt_decoded = jwt.decode(
-    jwt_token, exec_venue_public_pem, algorithms=['RS256'])
+    jwt_token, exec_venue_public_key_object, algorithms=['RS256'])
 
   return jwt_decoded
 
