@@ -5,6 +5,8 @@ import subprocess
 from pathlib import Path
 import datetime
 import logging
+from unittest.mock import patch
+import fakeredis
 
 
 import pytest
@@ -73,7 +75,7 @@ def jwt_token():
     private_key = Path(private_key_path).read_text()
     algorithm = os.getenv("JWT_ALGORITHM", "RS256")
 
-    now_ts = int(datetime.datetime.utcnow().timestamp())
+    now_ts = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
     payload = {
         "sub": "test_user",            # subject – can be any identifier
         "iat": now_ts,                    # issued‑at
@@ -102,7 +104,7 @@ def expired_jwt_token():
     private_key = Path(private_key_path).read_text()
     algorithm = os.getenv("JWT_ALGORITHM", "RS256")
 
-    now_ts = int(datetime.datetime.utcnow().timestamp())
+    now_ts = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
     payload = {
         "sub": "test_user",            # subject – can be any identifier
         "iat": now_ts,                    # issued‑at
@@ -131,7 +133,7 @@ def no_scope_jwt_token():
     private_key = Path(private_key_path).read_text()
     algorithm = os.getenv("JWT_ALGORITHM", "RS256")
 
-    now_ts = int(datetime.datetime.utcnow().timestamp())
+    now_ts = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
     payload = {
         "sub": "test_user",            # subject – can be any identifier
         "iat": now_ts - 7200,          # issued 2 h ago
@@ -146,6 +148,14 @@ def no_scope_jwt_token():
     if isinstance(token, bytes):
         token = token.decode("utf-8")
     return token
+
+@pytest.fixture(scope="session", autouse=True)
+def fake_redis():
+    """Patch redis.Redis with a shared FakeRedis server for the entire test session."""
+    server = fakeredis.FakeServer()
+    with patch("redis.Redis", lambda *args, **kwargs: fakeredis.FakeRedis(server=server)):
+        yield server
+
 
 @pytest.fixture(scope="module")
 def auth_client(jwt_token):

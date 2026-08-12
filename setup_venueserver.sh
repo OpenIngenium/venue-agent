@@ -54,7 +54,7 @@ then
     echo "Use existing Python virtual env: $VENV_DIR"
 else
     echo "Creating a Python virtual env: $VENV_DIR"
-    python3.13 -m venv $VENV_DIR
+    python3 -m venv $VENV_DIR
 fi
 
 REQUIREMENTS="$SCRIPT_DIR/requirements.txt"

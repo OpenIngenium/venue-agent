@@ -11,7 +11,7 @@ def print_env_variables():
     names = [
         'ING_VENUE_DIR',
         'ING_LOG_DIR',
-        'CUSTOM_SCRIPT_BASE_DIR'
+        'CUSTOM_SCRIPT_BASE_DIR',
         'PATH'
     ]
     for name in names:
@@ -36,6 +36,7 @@ import json
 import pyaml_env
 import uvicorn
 from fastapi import FastAPI, APIRouter
+from fastapi.encoders import jsonable_encoder
 from fastapi.openapi.utils import get_openapi
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse, FileResponse, Response
@@ -237,7 +238,7 @@ async def log_request(request: Request, call_next):
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc:RequestValidationError):
-    error_payload = {"detail": exc.errors()}
+    error_payload = {"detail": jsonable_encoder(exc.errors())}
     return JSONResponse(status_code=400, 
         content=error_payload)
 
