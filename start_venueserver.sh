@@ -9,14 +9,16 @@ export LANG='en_US.UTF-8'
 
 usage() {
   echo "
-  Usage: $0 -p PORT -f ENV_FILE 
+  Usage: $0 -p PORT -f ENV_FILE [-v VENV_DIR]
   
     Options:
       -p PORT (required): port used by VenueServer
       -f ENV_FILE: path to a file that defines environment variables (required)
+      -v VENV_DIR (optional): path to Python virtual environment (default: $SCRIPT_DIR/venv3)
 
   Example:
     $0 -p 19443 -f config/venueserver_dev_envs.sh
+    $0 -p 19443 -f config/venueserver_dev_envs.sh -v /home/user/my-venv
   " 
 }
 
@@ -25,13 +27,16 @@ input_error() {
   exit 1
 }
 
-while getopts ":p:f:" options; do
+while getopts ":p:f:v:" options; do
   case "${options}" in
     p)                     
       PORT=${OPTARG}
       ;;
     f)                                    
       ENV_FILE=${OPTARG}
+      ;;
+    v)
+      VENV_DIR=${OPTARG}
       ;;
     :)
       echo "Error: -${OPTARG} requires a value."
@@ -87,4 +92,4 @@ done
 
 echo "Starting Venue Server on port $PORT"
 
-$VENV_DIR/bin/python main.py --port $PORT
+$VENV_DIR/bin/python $SCRIPT_DIR/main.py --port $PORT
